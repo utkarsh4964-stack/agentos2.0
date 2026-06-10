@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — AgentOS</title>
+  <link rel="stylesheet" href="/static/style.css">
+  <style>
+    .container { max-width: 640px; padding-top: 48px; }
+    .topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 48px; }
+    .topbar a.logo { margin: 0; }
+    .logout-btn { width: auto; padding: 8px 16px; background: transparent; color: var(--text); border: 1px solid var(--border); font-size: 13px; }
+    .empty-state { text-align: center; padding: 64px 24px; border: 1px dashed var(--border); border-radius: var(--radius); color: var(--text-secondary); }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="topbar">
+      <a href="/" class="logo">AgentOS</a>
+      <button class="logout-btn" id="logout-btn">Log out</button>
+    </div>
+
+    <h1 id="welcome">Welcome</h1>
+    <p class="subtitle" id="user-email"></p>
+
+    <div class="empty-state">
+      <p>No pipelines yet.</p>
+      <p style="font-size: 13px;">The pipeline builder ships on Day 2.</p>
+    </div>
+  </div>
+
+  <script>
+    const token = localStorage.getItem('agentos_token');
+    const userJson = localStorage.getItem('agentos_user');
+
+    if (!token || !userJson) {
+      window.location.href = '/login';
+    } else {
+      const user = JSON.parse(userJson);
+      document.getElementById('welcome').textContent = `Welcome, ${user.name || 'there'}`;
+      document.getElementById('user-email').textContent = `${user.email} · ${user.plan} plan`;
+    }
+
+    document.getElementById('logout-btn').addEventListener('click', () => {
+      localStorage.removeItem('agentos_token');
+      localStorage.removeItem('agentos_user');
+      window.location.href = '/login';
+    });
+  </script>
+</body>
+</html>
